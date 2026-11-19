@@ -29,17 +29,29 @@
       .mug{display:block;left:6vw;top:40%;width:calc(110 * var(--u))}.ibook{display:block;right:3vw;top:39%;width:calc(130 * var(--u))}.book{right:4vw;top:49%;bottom:auto;width:calc(130 * var(--u))}
       .player{--u:min(calc(100vw / 780),calc(100dvh / 1570),.72px);left:16px;top:49%;bottom:auto}.shirt{width:calc(150 * var(--u));height:auto;margin-left:calc(-75 * var(--u))}
     }
-    :root{--surface:#174b9e;--background-image:none}
+    :root{--surface:#174b9e;--background-image:none;--theme-blue-image:url('{{BACKGROUND_BLUE}}');--theme-rose-image:url('{{BACKGROUND_ROSE}}');--theme-silver-image:url('{{BACKGROUND_SILVER}}')}
     :root[data-theme=original]{--surface:#1129e2;--background-image:none}
-    :root[data-theme=blue]{--surface:#174b9e;--background-image:url('{{BACKGROUND_BLUE}}')}
-    :root[data-theme=rose]{--surface:#633547;--background-image:url('{{BACKGROUND_ROSE}}')}
-    :root[data-theme=silver]{--surface:#e5e5e5;--background-image:url('{{BACKGROUND_SILVER}}');--ink:#252a33;--ink-70:rgba(37,42,51,.7);color-scheme:light}
+    :root[data-theme=blue]{--surface:#174b9e;--background-image:var(--theme-blue-image)}
+    :root[data-theme=rose]{--surface:#633547;--background-image:var(--theme-rose-image)}
+    :root[data-theme=silver]{--surface:#e5e5e5;--background-image:var(--theme-silver-image);--ink:#252a33;--ink-70:rgba(37,42,51,.7);color-scheme:light}
     body{background-color:var(--surface);background-image:var(--background-image);background-size:cover;background-position:center;background-repeat:no-repeat}
     button:focus-visible,a:focus-visible,input:focus-visible{outline-color:var(--ink)}
     .drawer{color:var(--ink);background:var(--surface);background-image:var(--background-image);background-size:cover;background-position:center}
     .drawer-search{color:var(--ink);border-bottom-color:currentColor}
     :root[data-theme=silver] .drawer{border-left-color:rgba(37,42,51,.2)}
+    .theme-switcher{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:4;display:flex;gap:2px;padding:5px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(18,22,40,.24);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+    .theme-button{position:relative;width:44px;height:44px;border-radius:50%;flex-shrink:0;touch-action:manipulation}
+    .theme-button::before{content:"";position:absolute;inset:9px;border-radius:50%;background-color:var(--swatch-color);background-image:var(--swatch-image);background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.5);box-shadow:0 1px 5px rgba(0,0,0,.16);transition:transform .15s ease}
+    .theme-button[aria-pressed=true]::after{content:"";position:absolute;inset:3px;border:1.5px solid var(--ink);border-radius:50%}
+    .theme-button[data-theme-choice=silver]{--swatch-color:#dedfe1;--swatch-image:var(--theme-silver-image)}
+    .theme-button[data-theme-choice=rose]{--swatch-color:#633547;--swatch-image:var(--theme-rose-image)}
+    .theme-button[data-theme-choice=blue]{--swatch-color:#174b9e;--swatch-image:var(--theme-blue-image)}
+    :root[data-theme=silver] .theme-switcher{background:rgba(255,255,255,.58);border-color:rgba(37,42,51,.22)}
+    @media (hover:hover){.theme-button:hover::before{transform:scale(1.12)}}
+    @media (max-aspect-ratio:1/1){.theme-switcher{right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom))}}
+    @media (prefers-reduced-motion:reduce){.theme-button::before{transition:none}}
   </style>
+  <script>{{THEME_JS}}</script>
 </head>
 <body>
   <main class="page" aria-label="Welcome！">
@@ -57,12 +69,16 @@
     </div>
     <canvas id="web-canvas" class="web-layer" aria-hidden="true"></canvas>
     <div class="over" aria-hidden="true"><div class="found"><span>Welc</span><span class="letter-o">o</span><span>me</span><span class="exclamation">！</span></div></div>
+    <div class="theme-switcher" role="group" aria-label="切换主题" data-no-spider>
+      <button class="theme-button" type="button" data-theme-choice="silver" aria-label="切换到银色主题" aria-pressed="false" title="银色主题"></button>
+      <button class="theme-button" type="button" data-theme-choice="rose" aria-label="切换到粉黑渐变主题" aria-pressed="false" title="粉黑渐变主题"></button>
+      <button class="theme-button" type="button" data-theme-choice="blue" aria-label="切换到蓝色织物主题" aria-pressed="false" title="蓝色织物主题"></button>
+    </div>
   </main>
   <dialog id="cabinet-drawer" class="drawer" aria-labelledby="drawer-title" data-no-spider>
     <button class="drawer-close" aria-label="Close drawer"><svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><path d="m6 6 16 16M22 6 6 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
     <h2 id="drawer-title" class="sr-only">Archive</h2><div id="drawer-content"></div>
   </dialog>
-  <script>{{THEME_JS}}</script>
   <script>window.FOUND_ASSETS={spider:'{{SPIDER}}',idle:'{{IDLE}}',fly:'{{FLY}}'};</script>
   <script>{{UI_JS}}</script>
   <script>{{SILK_JS}}</script>
